@@ -1,86 +1,106 @@
-# 🚀 Lab & Repositori Acuan Pekan 05: Git Workflows & Reproducibility
+﻿# Pekan 05 - Git Workflows and Reproducibility
 
-Selamat datang di materi laboratorium dan contoh implementasi **Pekan 05: Git Workflows, Dependensi, & Reproducibility** untuk mata kuliah **Pemrograman Lanjut (SIN442430)**, Program Studi Sistem Informasi FST UIN Alauddin Makassar.
+Proyek ini merupakan contoh implementasi Git workflow, manajemen dependency, konfigurasi lingkungan, unit testing, dan reproducibility untuk mata kuliah Pemrograman Lanjut.
 
----
-
-## 📁 Struktur Repositori (Gold Standard Layout)
+## 1. Struktur Repository
 
 ```text
-contoh_kode_pekan_5/
-├── .env.example                     # Cetak biru konfigurasi publik (Wajib di-commit)
-├── .gitignore                       # Memblokir .env, .venv, *.db, cache (Wajib di-commit)
-├── pyproject.toml                   # Manifest deklaratif PEP 621 standar industri
-├── src/
-│   ├── siakad_config/               # Modul 12-Factor App Settings & Validation
-│   │   ├── __init__.py
-│   │   └── settings.py
-│   └── siakad_billing/              # Modul inti billing agnostik lingkungan
-│       ├── __init__.py
-│       └── billing_core.py
-├── tests/                           # Unit test suite terisolasi
-│   └── test_config_and_billing.py
-├── scripts/
-│   └── verify_reproducibility.py    # Tool audit otomatis 4 pilar reproducibility
-└── README.md                        # Panduan ini
+.
+|-- .env.example
+|-- .gitignore
+|-- README.md
+|-- pyproject.toml
+|-- uv.lock
+|-- scripts/
+|   `-- verify_reproducibility.py
+|-- src/
+|   |-- siakad_billing/
+|   |   |-- __init__.py
+|   |   `-- billing_core.py
+|   `-- siakad_config/
+|       |-- __init__.py
+|       `-- settings.py
+`-- tests/
+    `-- test_config_and_billing.py
 ```
 
----
+## 2. Prasyarat
 
-## ⏱️ Protokol Laboratorium: "The Fresh Clone Test" (5 Menit)
+Pastikan Python 3.11 atau versi yang sesuai dengan konfigurasi proyek dan `uv` sudah terpasang.
 
-Uji apakah repositori Anda dapat direplikasi oleh rekan tim tanpa galat:
+Periksa instalasi dengan perintah:
 
-### Langkah 1: Siapkan Konfigurasi Lingkungan Lokal
-Salin template konfigurasi publik ke berkas `.env` lokal:
+```powershell
+python --version
+uv --version
+```
 
-```bash
-# Di Windows PowerShell:
+## 3. Clone Repository
+
+```powershell
+git clone https://github.com/nurazifahdiahm-cloud/tugas-pekan-5-billing.git
+cd tugas-pekan-5-billing
+```
+
+## 4. Instalasi Dependency
+
+Pasang dependency berdasarkan lockfile agar versi paket konsisten:
+
+```powershell
+uv sync --locked --extra dev
+```
+
+## 5. Konfigurasi Environment
+
+Buat file `.env` lokal berdasarkan template yang tersedia:
+
+```powershell
 Copy-Item .env.example .env
-
-# Di Linux / macOS / Git Bash:
-cp .env.example .env
 ```
 
-### Langkah 2: Jalankan Unit Test Suite
-Pastikan seluruh pengujian lulus:
+File `.env` berisi konfigurasi lokal dan tidak boleh diunggah ke repository. Gunakan `.env.example` sebagai template konfigurasi publik.
 
-```bash
-py -m unittest tests/test_config_and_billing.py
+## 6. Menjalankan Unit Test
+
+Jalankan seluruh unit test dengan perintah:
+
+```powershell
+uv run python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-### Langkah 3: Jalankan Audit Keterlacakan Otomatis
-Jalankan skrip audit mandiri untuk mendapatkan skor 100/100:
+Pengujian dinyatakan berhasil apabila seluruh test selesai dengan status `OK`.
 
-```bash
-py scripts/verify_reproducibility.py
+## 7. Audit Reproducibility
+
+Jalankan audit otomatis dengan perintah:
+
+```powershell
+uv run python scripts/verify_reproducibility.py
 ```
 
----
+Audit memeriksa aturan `.gitignore`, keberadaan `.env.example`, konfigurasi `pyproject.toml`, dan hasil unit test.
 
-## 🛠️ Alur Kerja Git Profesional (Git Workflow)
+Pada pengujian fresh clone, audit menghasilkan skor 100/100.
 
-Gunakan standar ini saat mengerjakan tugas mandiri/kelompok:
+## 8. Git Workflow
 
-### 1. Format Conventional Commits
-```bash
-git commit -m "feat(billing): tambah validasi payment api key fail-fast"
-git commit -m "test(config): tambah test case invalid port"
-git commit -m "chore(deps): perbarui batasan versi pydantic di pyproject.toml"
+Periksa perubahan file:
+
+```powershell
+git status
 ```
 
-### 2. Percabangan Fitur (Feature Branch)
-```bash
-# Buat branch baru untuk fitur diskon
-git checkout -b feat/tahfidz-discount
+Tambahkan perubahan yang relevan dan buat commit dengan pesan yang menjelaskan perubahan:
 
-# Setelah selesai & test lulus, push dan buka Pull Request
-git push origin feat/tahfidz-discount
+```powershell
+git add README.md
+git commit -m "docs: improve setup and testing instructions"
+git push
 ```
 
-### 3. Pemberian Tag Rilis (Semantic Versioning)
-```bash
-# Berikan tag beranotasi pada rilis v1.0.0
-git tag -a v1.0.0 -m "Release v1.0.0: Initial reproducible release"
-git push origin v1.0.0
-```
+Gunakan Conventional Commits, misalnya `feat:`, `fix:`, `test:`, `docs:`, atau `chore:`, sesuai jenis perubahan yang benar-benar dilakukan.
+
+## 9. Fresh Clone Test
+
+Untuk memvalidasi reproducibility, clone repository ke folder baru, pasang dependency, buat file `.env`, jalankan unit test, dan jalankan audit. Pastikan semua tahap berhasil.
+
